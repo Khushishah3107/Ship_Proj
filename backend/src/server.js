@@ -9,16 +9,15 @@ const cors = require('cors');
 app.use(cors());
 
 
-// Use express-fileupload middleware
 app.use(fileUpload());
 
-// MongoDB Atlas connection
+
 const dbURI = 'mongodb+srv://shahkhushi3107:yQepqC7HS5FMQg4e@cluster0.tuffxwb.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0'; // Replace with your MongoDB URI
 mongoose.connect(dbURI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected...'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// Define Mongoose schemas
+
 const companySchema = new mongoose.Schema({
   companyName: { type: String, required: true },
   companyAddress: { type: String },
@@ -42,7 +41,7 @@ const contactSchema = new mongoose.Schema({
 const Company = mongoose.model('Company', companySchema);
 const Contact = mongoose.model('Contact', contactSchema);
 
-// Route to handle file upload and data storage for companies
+
 app.post('/api/upload/company', async (req, res) => {
   try {
     if (!req.files || !req.files.file) {
@@ -50,12 +49,12 @@ app.post('/api/upload/company', async (req, res) => {
     }
 
     const file = req.files.file;
-    const workbook = xlsx.read(file.data); // Read the uploaded file data
+    const workbook = xlsx.read(file.data); 
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
     const jsonData = xlsx.utils.sheet_to_json(sheet);
 
-    // Validate and save data to MongoDB
+ 
     for (const data of jsonData) {
       const company = new Company(data); 
       await company.save();
@@ -68,7 +67,6 @@ app.post('/api/upload/company', async (req, res) => {
   }
 });
 
-// Route to handle file upload and data storage for contacts
 app.post('/api/upload/contact', async (req, res) => {
   try {
     if (!req.files || !req.files.file) {
@@ -76,12 +74,11 @@ app.post('/api/upload/contact', async (req, res) => {
     }
 
     const file = req.files.file;
-    const workbook = xlsx.read(file.data); // Read the uploaded file data
+    const workbook = xlsx.read(file.data); 
     const sheetName = workbook.SheetNames[0];
     const sheet = workbook.Sheets[sheetName];
     const jsonData = xlsx.utils.sheet_to_json(sheet);
 
-    // Validate and save data to MongoDB
     for (const data of jsonData) {
       const contact = new Contact(data); 
       await contact.save();
@@ -96,8 +93,8 @@ app.post('/api/upload/contact', async (req, res) => {
 
 app.get('/api/company', async (req, res) => {
   try {
-    const companies = await Company.find(); // Retrieve all companies from MongoDB
-    res.json(companies); // Send JSON response with the retrieved companies array
+    const companies = await Company.find(); 
+    res.json(companies); 
   } catch (err) {
     console.error('Error fetching companies:', err);
     res.status(500).json({ message: 'Failed to fetch companies. Please try again.' });
@@ -106,14 +103,14 @@ app.get('/api/company', async (req, res) => {
 
 app.get('/api/contact', async (req, res) => {
   try {
-    const contacts = await Contact.find(); // Retrieve all companies from MongoDB
-    res.json(contacts); // Send JSON response with the retrieved companies array
+    const contacts = await Contact.find(); 
+    res.json(contacts); 
   } catch (err) {
     console.error('Error fetching contacts:', err);
     res.status(500).json({ message: 'Failed to fetch contacts. Please try again.' });
   }
 });
-// Start server
+
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
