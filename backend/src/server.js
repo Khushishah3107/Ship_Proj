@@ -94,6 +94,25 @@ app.post('/api/upload/contact', async (req, res) => {
   }
 });
 
+app.get('/api/company', async (req, res) => {
+  try {
+    const companies = await Company.find(); // Retrieve all companies from MongoDB
+    res.json(companies); // Send JSON response with the retrieved companies array
+  } catch (err) {
+    console.error('Error fetching companies:', err);
+    res.status(500).json({ message: 'Failed to fetch companies. Please try again.' });
+  }
+});
+
+app.get('/api/contact', async (req, res) => {
+  try {
+    const contacts = await Contact.find(); // Retrieve all companies from MongoDB
+    res.json(contacts); // Send JSON response with the retrieved companies array
+  } catch (err) {
+    console.error('Error fetching contacts:', err);
+    res.status(500).json({ message: 'Failed to fetch contacts. Please try again.' });
+  }
+});
 // Start server
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
